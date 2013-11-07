@@ -6,8 +6,8 @@
  * To change this template use File | Settings | File Templates.
  */
 
-;(function(){
-  algorithms.sorts.mergeSort = mergeSort;
+;(function(namespace){
+  namespace.mergeSort = mergeSort;
 
   function mergeSort(arr) {
     if (arr.length < 2) return arr;
@@ -35,4 +35,4 @@
     }
     return result;
   }
-}());
+}(Algorithms.Sorts || {}));
