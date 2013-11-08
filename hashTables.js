@@ -6,48 +6,41 @@
  * To change this template use File | Settings | File Templates.
  */
 
-;
-(function () {
+Algorithms.DataStructures.hashTable = (function () {
+  var _hashTable = [];
   var hashTableSize;
 
-  var Item = function (city, state) {
+  function Item(city, state) {
     this.city = city || "empty";
     this.state = state || "empty";
     this.next = null;
-  };
+  }
 
-  var HashTable = function (params) {
-    params = params || {};
-    hashTableSize = params.hashTableSize || 5;
-    this._hashTable = [];
-    this.hashTableSize = hashTableSize;
-    this.initializeHashTable();
-  };
-
-  HashTable.prototype.initializeHashTable = function () {
-    for (var i = 0; i < this.hashTableSize; i++) {
-      this._hashTable[i] = new Item();
+  function initializeHashTable(size) {
+    hashTableSize = size || 5;
+    for (var i = 0; i < hashTableSize; i++) {
+      _hashTable[i] = new Item();
     }
-  };
+  }
 
-  HashTable.prototype.addItem = function (city, state) {
+  function addItem(city, state) {
     var index = getBucketIndex(city);
 
-    if (this._hashTable[index].city === "empty") {
-      this._hashTable[index] = new Item(city, state);
+    if (_hashTable[index].city === "empty") {
+      _hashTable[index] = new Item(city, state);
     } else {
-      var storedItem = this._hashTable[index];
+      var storedItem = _hashTable[index];
       var newItem = new Item(city, state);
       while (storedItem.next !== null) {
         storedItem = storedItem.next;
       }
       storedItem.next = newItem;
     }
-  };
+  }
 
-  HashTable.prototype.findState = function (city) {
+  function findState(city) {
     var bucket = getBucketIndex(city);
-    var storedItem = this._hashTable[bucket];
+    var storedItem = _hashTable[bucket];
     if (storedItem.city === "empty") {
       console.log("There is no such city in the hash table");
     } else {
@@ -60,24 +53,22 @@
       }
     }
     return 0;
-  };
+  }
 
-  HashTable.prototype.removeItem = function (city) {
+  function removeItem(city) {
     var bucket = getBucketIndex(city);
-    if (this._hashTable[bucket].city === "empty") {
+    if (_hashTable[bucket].city === "empty") {
       console.log("There is no such city in the hash table");
-    } else if (this._hashTable[bucket].city === city && this._hashTable[bucket].next === null) {
-      this._hashTable[bucket].city = "empty";
-      this._hashTable[bucket].state = "empty";
+    } else if (_hashTable[bucket].city === city && _hashTable[bucket].next === null) {
+      _hashTable[bucket].city = "empty";
+      _hashTable[bucket].state = "empty";
 
-    } else if (this._hashTable[bucket].city === city) {
-      var itemToDelete = this._hashTable[bucket];
-      this._hashTable[bucket] = this._hashTable[bucket].next;
-      itemToDelete = null;
+    } else if (_hashTable[bucket].city === city) {
+      _hashTable[bucket] = _hashTable[bucket].next;
 
     } else {
-      var nextItem = this._hashTable[bucket].next;
-      var prevItem = this._hashTable[bucket];
+      var nextItem = _hashTable[bucket].next;
+      var prevItem = _hashTable[bucket];
 
       while (nextItem !== null && nextItem.city !== city) {
         prevItem = nextItem;
@@ -87,43 +78,41 @@
       if (nextItem === null) {
         console.log("There is no such city in the hash table");
       } else {
-        itemToDelete = nextItem;
         nextItem = nextItem.next;
         prevItem.next = nextItem;
-        itemToDelete = null;
       }
     }
-  };
+  }
 
-  HashTable.prototype.numberOfItemsInBucket = function (index) {
+  function numberOfItemsInBucket(index) {
     var count = 0;
-    if (this._hashTable[index].city !== "empty") {
+    if (_hashTable[index].city !== "empty") {
       count++;
-      var storedItem = this._hashTable[index];
+      var storedItem = _hashTable[index];
       while (storedItem.next !== null) {
         storedItem = storedItem.next;
         count++;
       }
     }
     return count;
-  };
+  }
 
-  HashTable.prototype.printTable = function () {
+  function printTable() {
     var totalItemsInBucket;
 
-    for (var i = 0; i < this.hashTableSize; i++) {
-      totalItemsInBucket = this.numberOfItemsInBucket(i);
+    for (var i = 0; i < hashTableSize; i++) {
+      totalItemsInBucket = numberOfItemsInBucket(i);
       console.log("-------------------------\n");
       console.log("bucket = " + i);
-      console.log(this._hashTable[i].city);
-      console.log(this._hashTable[i].state);
+      console.log(_hashTable[i].city);
+      console.log(_hashTable[i].state);
       console.log("Total number of items in the bucket = " + totalItemsInBucket);
       console.log("-------------------------\n");
     }
-  };
+  }
 
-  HashTable.prototype.printItemsPerBucket = function (index) {
-    var storedItem = this._hashTable[index];
+  function printItemsPerBucket(index) {
+    var storedItem = _hashTable[index];
     if (storedItem.city === "empty") {
       console.log("Bucket is empty");
     } else {
@@ -136,7 +125,7 @@
         storedItem = storedItem.next;
       }
     }
-  };
+  }
 
   function getBucketIndex(key) {
     var hashValue = 0;
@@ -146,11 +135,27 @@
     return hashValue % hashTableSize;
   }
 
-  Algorithms.DataStructures.HashTable = HashTable;
+  return {
+    createTable: function(size) {
+      initializeHashTable();
+    },
+    hashTableSize: hashTableSize,
+    addItem: addItem,
+    findState: findState,
+    removeItem: removeItem,
+    numberOfItemsInBucket: numberOfItemsInBucket,
+    printTable: printTable,
+    printItemsPerBucket: printItemsPerBucket
+  }
 
 }());
 
-var hashTable = new Algorithms.DataStructures.HashTable();
+
+
+
+var hashTable = Algorithms.DataStructures.hashTable;
+
+hashTable.createTable(5);
 
 hashTable.addItem("New York", "NY");
 hashTable.addItem("Miami", "FL");
