@@ -1,4 +1,4 @@
-dataStructuresAndAlghoritms
+Data Structures and Algorithms with JavaScript
 ===========================
 
-Data Structures and Algorithms with JavaScript
+Let's JavaScript!!!!!
