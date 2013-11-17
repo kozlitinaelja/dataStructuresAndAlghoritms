@@ -37,7 +37,7 @@ var graph;
 
     this._vertexes.push(vertex);
 
-    this._edges[this._vertexes.length -1] = [];
+    this._edges[this._vertexes.length - 1] = [];
 
     for (var i = 0, len = this._vertexes.length; i < len; i++) {
       this._edges[this._vertexes.length - 1][i] = 0;
@@ -48,7 +48,7 @@ var graph;
   Graph.prototype.addEdge = function (startVertex, endVertex, weight) {
     this._edges[inArray(startVertex, this._vertexes)][inArray(endVertex, this._vertexes)] = weight ? weight : 1;
     if (!this._isDirected) {
-      this._edges[inArray(endVertex, this._vertexes)][inArray(startVertex, this._vertexes)]= weight ? weight : 1;
+      this._edges[inArray(endVertex, this._vertexes)][inArray(startVertex, this._vertexes)] = weight ? weight : 1;
     }
   };
 
@@ -81,7 +81,7 @@ var graph;
   Graph.prototype.findNeighbors = function (vertex) {
     var neighbors = [];
     for (var i = 0, len = this._vertexes.length; i < len; i++) {
-      if (this._edges[inArray(vertex, this._vertexes)][i] > 0 ){
+      if (this._edges[inArray(vertex, this._vertexes)][i] > 0) {
         neighbors.push(this._vertexes[i]);
       }
     }
@@ -108,13 +108,13 @@ var graph;
       vertex = stack.top();
       neighbors = this.findNeighbors(vertex.value);
 
-      for (i = 0; i < len;  i++) {
+      for (var j = 0, length = neighbors.length; j < length; j++) {
         if (isNextVertex(neighbors)) {
-          if (this._edges[inArray(vertex.value, this._vertexes)][inArray(neighbors[i].value,  this._vertexes)] !== 0 && neighbors[i].discovered) continue;
-          if(this._edges[inArray(vertex.value, this._vertexes)][inArray(neighbors[i].value,  this._vertexes)] !== 0){
-            vertex = neighbors[i];
-            neighbors[i].discovered = true;
-            this._vertexes[inArray(neighbors[i].value, this._vertexes)].discovered = true;
+          if (this._edges[inArray(vertex.value, this._vertexes)][inArray(neighbors[j].value, this._vertexes)] !== 0 && neighbors[j].discovered) continue;
+          if (this._edges[inArray(vertex.value, this._vertexes)][inArray(neighbors[j].value, this._vertexes)] !== 0) {
+            vertex = neighbors[j];
+            neighbors[j].discovered = true;
+            this._vertexes[inArray(neighbors[j].value, this._vertexes)].discovered = true;
             stack.push(vertex);
             result.push(vertex.value);
             break;
@@ -126,20 +126,49 @@ var graph;
       }
     }
 
-    function isNextVertex(neighbors) {
-      for (var i = 0, len = neighbors.length; i < len;  i++) {
-        if (!neighbors[i].discovered) {
-          return true;
-        }
-      }
-      return false;
-    }
     return result.join(", ")
   };
 
+  Graph.prototype.breadthFirstTraversal = function (vertexToStart) {
+    var queue = new Algorithms.DataStructures.Queue();
+    var result = [];
+    var vertex;
+    var neighbors;
+
+    for (var i = 0, len = this._vertexes.length; i < len; i++) {
+      this._vertexes[i].discovered = false;
+    }
+
+    vertex = this._vertexes[inArray(vertexToStart, this._vertexes)];
+
+    queue.enqueue(vertex);
+    vertex.discovered = true;
+    result.push(vertex.value);
+
+    while (!queue.isEmpty()) {
+      vertex = queue.dequeue();
+      vertex.inProcess = true;
+      neighbors = this.findNeighbors(vertex.value);
+      for (var j = 0, length = neighbors.length; j < length; j++) {
+
+        if (isNextVertex(neighbors)) {
+          if (neighbors[j].discovered) continue;
+          queue.enqueue(neighbors[j]);
+          neighbors[j].discovered = true;
+          result.push(neighbors[j].value);
+        } else {
+          vertex.inProcess = false;
+          break;
+        }
+
+      }
+    }
+
+  return result.join(", ");
+  };
 
 
-  var Vertex = function(value) {
+  var Vertex = function (value) {
     this.value = value;
   };
 
@@ -152,15 +181,28 @@ var graph;
     return -1;
   }
 
-
+  function isNextVertex(neighbors) {
+    for (var i = 0, len = neighbors.length; i < len; i++) {
+      if (!neighbors[i].discovered) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 
   graph = new Graph(["a", "b", "c", "d", "e", "f", "g", "h"], false);
 
   //graph.addEdge(3, 5);
-  graph.addEdge('a', 'b');graph.addEdge('a', 'g');graph.addEdge('a', 'd');graph.addEdge('b', 'e');graph.addEdge('b', 'f');graph.addEdge('c', 'h');
-  graph.addEdge('c', 'f');graph.addEdge('d', 'f');graph.addEdge('e', 'g');
-
+  graph.addEdge('a', 'b');
+  graph.addEdge('a', 'g');
+  graph.addEdge('a', 'd');
+  graph.addEdge('b', 'e');
+  graph.addEdge('b', 'f');
+  graph.addEdge('c', 'h');
+  graph.addEdge('c', 'f');
+  graph.addEdge('d', 'f');
+  graph.addEdge('e', 'g');
 
 
   console.log(graph._edges);
