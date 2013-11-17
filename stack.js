@@ -6,33 +6,41 @@
  * To change this template use File | Settings | File Templates.
  */
 
-(function() {
-  var _stack = [];
-  var maxSize;
- function Stack(size) {
-   maxSize = size || Infinity;
-   this.srackSize = _stack.length
- }
+;
+(function () {
+  function Stack(size) {
+    this._stack = [];
+    this.maxSize = size || Infinity;
+  }
+
   Stack.prototype.top = function () {
-    return _stack.length ? _stack[_stack.length - 1] : -1;
+    if (this.isEmpty() === 0) {
+      console.log("Stack is empty");
+    } else {
+      return this._stack.length ? this._stack[this._stack.length - 1] : -1;
+    }
   };
 
   Stack.prototype.pop = function () {
-    if (_stack.length === 0) {
+    if (this.isEmpty() === 0) {
       console.log("Stack is empty");
-      return -1;
+      return
     }
-    var delItem = _stack[length-1];
-    _stack.length = _stack.length - 1;
+    var delItem = this._stack[this._stack.length - 1];
+    this._stack.length = this._stack.length - 1;
     return delItem
   };
 
   Stack.prototype.push = function (el) {
-    if (_stack.length === maxSize) {
+    if (this._stack.length === this.maxSize) {
       console.log("Stack is full");
       return;
     }
-    _stack[_stack.length] = el;
+    this._stack[this._stack.length] = el;
+  };
+
+  Stack.prototype.isEmpty = function () {
+    return this._stack.length ? false : true;
   };
 
   Algorithms.DataStructures.Stack = Stack;
