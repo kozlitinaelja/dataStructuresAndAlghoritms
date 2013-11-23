@@ -6,8 +6,9 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var Heap = function () {
+var Heap = function (propertyToCompare) {
   var _heap = [];
+  propertyToCompare = propertyToCompare || null;
 
   function siftUp() {
     var indexOfNewItem = _heap.length - 1;
@@ -17,7 +18,7 @@ var Heap = function () {
     if (parentIndex === -1) return;
 
     while (parentIndex !== -1) {
-      if (_heap[indexOfNewItem] < _heap[parentIndex]) {
+      if (_heap[indexOfNewItem].dist < _heap[parentIndex].dist) {
         buffer = _heap[indexOfNewItem];
         _heap[indexOfNewItem] = _heap[parentIndex];
         _heap[parentIndex] = buffer;
@@ -34,6 +35,7 @@ var Heap = function () {
     var parentIndex = 0;
     var leftChildrenIndex = 2 * parentIndex + 1;
     var rightChildrenIndex, minChildren;
+    var conditionToCheck;
 
     if (leftChildrenIndex > _heap.length) {
       return;
@@ -43,13 +45,16 @@ var Heap = function () {
       minChildren = leftChildrenIndex;
       rightChildrenIndex = leftChildrenIndex + 1;
       if (rightChildrenIndex < _heap.length) {
-        if (_heap[rightChildrenIndex] < _heap[leftChildrenIndex]) {
+        conditionToCheck = propertyToCompare ? _heap[rightChildrenIndex][propertyToCompare] < _heap[leftChildrenIndex][propertyToCompare] : _heap[rightChildrenIndex] < _heap[leftChildrenIndex];
+        if (conditionToCheck) {
           minChildren = rightChildrenIndex;
           buffer = _heap[parentIndex];
           _heap[parentIndex] = _heap[rightChildrenIndex];
           _heap[rightChildrenIndex] = buffer;
           parentIndex = minChildren;
           leftChildrenIndex = 2 * parentIndex + 1;
+        }  else {
+          break;
         }
       } else {
         break;
@@ -58,6 +63,7 @@ var Heap = function () {
   }
 
   function insert(newElement) {
+    console.log(_heap);
     _heap[_heap.length] = newElement;
     siftUp();
     console.log(_heap);
@@ -66,20 +72,22 @@ var Heap = function () {
 
   function deleteMin() {
     var itemToDelete;
+    console.log(_heap);
 
     if (isEmpty()) {
       console.log("Heap is empty. There is nothing to delete");
+      return false;
     }
 
     itemToDelete = _heap[0];
 
+    if (_heap.length > 1) {
     siftDown();
+    }
 
     _heap.length = _heap.length - 1;
 
-    if (isEmpty()) {
-     console.log("Last item was deletet. Heap is empty");
-    }
+    console.log(_heap);
 
     return itemToDelete;
 
@@ -112,6 +120,9 @@ var Heap = function () {
   return {
     insert: insert,
     deleteMin: deleteMin,
-    findMin: findMin
+    findMin: findMin,
+    isEmpty: isEmpty,
+    count: _heap.length,
+    _heap: _heap
   }
 };
