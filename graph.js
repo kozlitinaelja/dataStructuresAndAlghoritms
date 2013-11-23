@@ -10,8 +10,6 @@
  # Graph implementation in Adjacency Matrix
  */
 
-var graph;
-
 (function () {
   var Graph = function (vertexes, isDirected) {
     this._vertexes = [];
@@ -190,21 +188,6 @@ var graph;
     return false;
   }
 
-
-  graph = new Graph(["a", "b", "c", "d", "e", "f", "g", "h"], false);
-
-  //graph.addEdge(3, 5);
-  graph.addEdge('a', 'b');
-  graph.addEdge('a', 'g');
-  graph.addEdge('a', 'd');
-  graph.addEdge('b', 'e');
-  graph.addEdge('b', 'f');
-  graph.addEdge('c', 'h');
-  graph.addEdge('c', 'f');
-  graph.addEdge('d', 'f');
-  graph.addEdge('e', 'g');
-
-
-  console.log(graph._edges);
+  Algorithms.DataStructures.GraphMatrix = Graph;
 
 }());
