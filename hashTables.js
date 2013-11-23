@@ -10,9 +10,9 @@ Algorithms.DataStructures.hashTable = (function () {
   var _hashTable = [];
   var hashTableSize;
 
-  function Item(city, state) {
-    this.city = city || "empty";
-    this.state = state || "empty";
+  function Item(key, value) {
+    this.key = key || "empty";
+    this.value = value || "empty";
     this.next = null;
   }
 
@@ -23,14 +23,14 @@ Algorithms.DataStructures.hashTable = (function () {
     }
   }
 
-  function addItem(city, state) {
-    var index = getBucketIndex(city);
+  function insert(key, value) {
+    var index = getBucketIndex(key);
 
-    if (_hashTable[index].city === "empty") {
-      _hashTable[index] = new Item(city, state);
+    if (_hashTable[index].key === "empty") {
+      _hashTable[index] = new Item(key, value);
     } else {
       var storedItem = _hashTable[index];
-      var newItem = new Item(city, state);
+      var newItem = new Item(key, value);
       while (storedItem.next !== null) {
         storedItem = storedItem.next;
       }
@@ -38,16 +38,16 @@ Algorithms.DataStructures.hashTable = (function () {
     }
   }
 
-  function findState(city) {
-    var bucket = getBucketIndex(city);
+  function search(key) {
+    var bucket = getBucketIndex(key);
     var storedItem = _hashTable[bucket];
-    if (storedItem.city === "empty") {
-      console.log("There is no such city in the hash table");
+    if (storedItem.key === "empty") {
+      console.log("There is no such key in the hash table");
     } else {
       while (storedItem !== null) {
-        if (storedItem.city === city) {
-          console.log("State is " + storedItem.state);
-          return storedItem.state;
+        if (storedItem.key === key) {
+          console.log("Value is " + storedItem.value);
+          return storedItem.value;
         }
         storedItem = storedItem.next;
       }
@@ -55,28 +55,28 @@ Algorithms.DataStructures.hashTable = (function () {
     return 0;
   }
 
-  function removeItem(city) {
-    var bucket = getBucketIndex(city);
-    if (_hashTable[bucket].city === "empty") {
-      console.log("There is no such city in the hash table");
-    } else if (_hashTable[bucket].city === city && _hashTable[bucket].next === null) {
-      _hashTable[bucket].city = "empty";
-      _hashTable[bucket].state = "empty";
+  function deleteItem(key) {
+    var bucket = getBucketIndex(key);
+    if (_hashTable[bucket].key === "empty") {
+      console.log("There is no such key in the hash table");
+    } else if (_hashTable[bucket].key === key && _hashTable[bucket].next === null) {
+      _hashTable[bucket].key = "empty";
+      _hashTable[bucket].value = "empty";
 
-    } else if (_hashTable[bucket].city === city) {
+    } else if (_hashTable[bucket].key === key) {
       _hashTable[bucket] = _hashTable[bucket].next;
 
     } else {
       var nextItem = _hashTable[bucket].next;
       var prevItem = _hashTable[bucket];
 
-      while (nextItem !== null && nextItem.city !== city) {
+      while (nextItem !== null && nextItem.key !== key) {
         prevItem = nextItem;
         nextItem = prevItem.next;
       }
 
       if (nextItem === null) {
-        console.log("There is no such city in the hash table");
+        console.log("There is no such key in the hash table");
       } else {
         nextItem = nextItem.next;
         prevItem.next = nextItem;
@@ -86,7 +86,7 @@ Algorithms.DataStructures.hashTable = (function () {
 
   function numberOfItemsInBucket(index) {
     var count = 0;
-    if (_hashTable[index].city !== "empty") {
+    if (_hashTable[index].key !== "empty") {
       count++;
       var storedItem = _hashTable[index];
       while (storedItem.next !== null) {
@@ -104,8 +104,8 @@ Algorithms.DataStructures.hashTable = (function () {
       totalItemsInBucket = numberOfItemsInBucket(i);
       console.log("-------------------------\n");
       console.log("bucket = " + i);
-      console.log(_hashTable[i].city);
-      console.log(_hashTable[i].state);
+      console.log(_hashTable[i].key);
+      console.log(_hashTable[i].value);
       console.log("Total number of items in the bucket = " + totalItemsInBucket);
       console.log("-------------------------\n");
     }
@@ -113,14 +113,14 @@ Algorithms.DataStructures.hashTable = (function () {
 
   function printItemsPerBucket(index) {
     var storedItem = _hashTable[index];
-    if (storedItem.city === "empty") {
+    if (storedItem.key === "empty") {
       console.log("Bucket is empty");
     } else {
       console.log("Bucket contains: \n");
       while (storedItem !== null) {
         console.log("-------------------------\n");
-        console.log(storedItem.city);
-        console.log(storedItem.state);
+        console.log(storedItem.key);
+        console.log(storedItem.value);
         console.log("-------------------------\n");
         storedItem = storedItem.next;
       }
@@ -140,9 +140,9 @@ Algorithms.DataStructures.hashTable = (function () {
       initializeHashTable();
     },
     hashTableSize: hashTableSize,
-    addItem: addItem,
-    findState: findState,
-    removeItem: removeItem,
+    insert: insert,
+    search: search,
+    delete: deleteItem,
     numberOfItemsInBucket: numberOfItemsInBucket,
     printTable: printTable,
     printItemsPerBucket: printItemsPerBucket
